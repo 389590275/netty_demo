@@ -13,7 +13,8 @@ import java.net.Socket;
  */
 public class Demo1 {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
+        System.out.println(1);
         new Thread(() -> {
             try {
                 startServer();
@@ -61,12 +62,10 @@ public class Demo1 {
             } catch (Exception e) {
             }
         }).start();
-
         for (int i = 0; i < 10; i++) {
             out.println("嘿嘿");
             Thread.sleep(1000L);
         }
-
         socket.close();
     }
 
