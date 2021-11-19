@@ -1,8 +1,8 @@
-package com.demo.c1;
+package com.nio.c1;
 
 import java.nio.ByteBuffer;
 
-import static com.util.ByteBufferUtil.debugAll;
+import static com.nio.util.ByteBufferUtil.debugAll;
 
 /**
  * 简单的粘包 半包

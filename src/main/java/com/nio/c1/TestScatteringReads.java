@@ -1,11 +1,11 @@
-package com.demo.c1;
+package com.nio.c1;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
-import static com.util.ByteBufferUtil.debugAll;
+import static com.nio.util.ByteBufferUtil.debugAll;
 
 /**
  * 分散读 读取到多个ByteBuffer

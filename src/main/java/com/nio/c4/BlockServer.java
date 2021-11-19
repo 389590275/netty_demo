@@ -1,4 +1,4 @@
-package com.demo.c4;
+package com.nio.c4;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -10,7 +10,7 @@ import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.util.ByteBufferUtil.debugRead;
+import static com.nio.util.ByteBufferUtil.debugRead;
 
 /**
  * @author xiangchijie

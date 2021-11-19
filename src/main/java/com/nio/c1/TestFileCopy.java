@@ -1,4 +1,4 @@
-package com.demo.c1;
+package com.nio.c1;
 
 import java.io.IOException;
 import java.nio.file.Files;

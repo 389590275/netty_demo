@@ -1,4 +1,4 @@
-package com.demo.c4;
+package com.nio.c4;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -9,10 +9,9 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
-import java.nio.charset.Charset;
 import java.util.Iterator;
 
-import static com.util.ByteBufferUtil.debugRead;
+import static com.nio.util.ByteBufferUtil.debugAll;
 
 /**
  * @author xiangchijie
@@ -50,25 +49,62 @@ public class SelectorServer {
                     ServerSocketChannel channel = (ServerSocketChannel) key.channel();
                     SocketChannel sc = channel.accept();
                     sc.configureBlocking(false);
-                    SelectionKey scKey = sc.register(selector, 0, null);
+
+                    // 为socketChannel注册事件
+                    ByteBuffer buffer = ByteBuffer.allocate(16); // attachment 附件
+                    // 将一个ByteBuffer 作为附件关联到selectionKey上
+                    SelectionKey scKey = sc.register(selector, 0, buffer);
+
                     scKey.interestOps(SelectionKey.OP_READ);
                     log.debug("{}", sc);
                 } else if (key.isReadable()) {
                     SocketChannel channel = (SocketChannel) key.channel();
-                    ByteBuffer buffer = ByteBuffer.allocate(4);
+                    // 获取selectionKey上关联的附件
+                    ByteBuffer buffer = (ByteBuffer) key.attachment();
+
                     int read = channel.read(buffer);
+                    // 连接断开时 会受到一个读事件，但是没有数据
                     if (read == -1) {
                         key.cancel();
                     } else {
-                        buffer.flip();
-                        System.out.println(Charset.defaultCharset().decode(buffer));
-                        //debugRead(buffer);
+                        split(buffer);
+                        if (buffer.position() == buffer.limit()) {
+                            ByteBuffer newBuffer = ByteBuffer.allocate(buffer.capacity() * 2);
+                            buffer.flip();
+                            newBuffer.put(buffer);
+                            key.attach(newBuffer);
+                        }
+                        continue;
                     }
                 }
                 // 需要手动删除
                 iterator.remove();
             }
         }
+    }
+
+    /**
+     * 实现
+     *
+     * @param source
+     */
+    private static void split(ByteBuffer source) {
+        // 读模式
+        source.flip();
+        for (int i = 0; i < source.limit(); i++) {
+            if (source.get(i) == '\n') {
+                int len = i + 1 - source.position();
+                // 把这条完整消息存入新的 ByteBuffer
+                ByteBuffer target = ByteBuffer.allocate(len);
+                byte[] bytes = new byte[len];
+                source.get(bytes);
+                target.put(bytes);
+                debugAll(target);
+            }
+        }
+
+        // 切换写模式
+        source.compact();
     }
 
     // SelectionKey 事件类型

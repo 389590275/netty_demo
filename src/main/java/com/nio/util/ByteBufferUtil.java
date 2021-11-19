@@ -1,10 +1,9 @@
-package com.util;
+package com.nio.util;
 
 import java.nio.ByteBuffer;
 
 import io.netty.util.internal.MathUtil;
 import io.netty.util.internal.StringUtil;
-import io.netty.util.internal.MathUtil.*;
 
 
 /**

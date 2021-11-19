@@ -1,10 +1,9 @@
-package com.demo.c1;
+package com.nio.c1;
 
 import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
-import static com.util.ByteBufferUtil.debugAll;
+import static com.nio.util.ByteBufferUtil.debugAll;
 
 /**
  * @author xiangchijie
