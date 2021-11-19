@@ -18,8 +18,8 @@ public class TestEventLoop {
         EventLoopGroup group = new NioEventLoopGroup(2);// io事件 普通任务 定时任务
         //EventLoopGroup group = new DefaultEventLoopGroup();
         // 2.获取下一个事件循环对象【相当于环形链表】
-        System.out.println(group.next());
-        System.out.println(group.next());
+        System.out.println(group.next().hashCode());
+        System.out.println(group.next().hashCode());
         System.out.println(group.next());
         System.out.println(group.next());
         System.out.println(group.next());
@@ -34,7 +34,7 @@ public class TestEventLoop {
             log.debug("ok");
         });
 
-        // 4.执行定时任务
+//         4.执行定时任务
         group.next().scheduleAtFixedRate(() -> {
             log.debug("ok");
         }, 0, 1, TimeUnit.SECONDS);

@@ -28,25 +28,26 @@ public class EventLoopServer {
                 .childHandler(new ChannelInitializer<NioSocketChannel>() {
                     @Override
                     protected void initChannel(NioSocketChannel ch) throws Exception {
-
-                        ch.pipeline().addLast( "handler1", new ChannelInboundHandlerAdapter() {
+                        ch.pipeline().addLast("handler1", new ChannelInboundHandlerAdapter() {
                             @Override
                             public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
                                 ByteBuf buf = (ByteBuf) msg;
-                                log.debug(buf.toString(Charset.defaultCharset()));
+                                log.debug("handler1 msg:{}", buf.toString(Charset.defaultCharset()));
                                 // 将消息传递给下一个handler
                                 ctx.fireChannelRead(msg);
                             }
                         });
-
-                        // 绑定指定group，这里 Channel 和 EventLoop绑定
-                        ch.pipeline().addLast(group, "handler2", new ChannelInboundHandlerAdapter() {
+                        ChannelHandler channelHandler = new ChannelInboundHandlerAdapter() {
                             @Override
                             public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
                                 ByteBuf buf = (ByteBuf) msg;
-                                log.debug(buf.toString(Charset.defaultCharset()));
+                                log.debug("handler2 msg:{}", buf.toString(Charset.defaultCharset()));
+                                ctx.fireChannelRead(buf.toString(Charset.defaultCharset()));
                             }
-                        });
+                        };
+                        // 绑定指定group，这里 Channel 和 EventLoop绑定
+                        // ch.pipeline().addLast(group, "handler2", channelHandler);
+
                     }
                 })
                 .bind(8080);
