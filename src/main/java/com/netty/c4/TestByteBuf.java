@@ -6,7 +6,6 @@ import io.netty.buffer.ByteBufUtil;
 import io.netty.util.internal.StringUtil;
 
 
-
 /**
  * @author xiangchijie
  * @date 2021/11/22 3:18 下午
@@ -14,7 +13,30 @@ import io.netty.util.internal.StringUtil;
 public class TestByteBuf {
 
     public static void main(String[] args) {
+        ByteBuf buffer = ByteBufAllocator.DEFAULT.buffer(10);
+        buffer.writeBytes(new byte[]{1,2,3,4});
+        buffer.writeInt(5);
+        buffer.writeInt(6);
+        log(buffer);
+
+        System.out.println(buffer.readByte());
+        System.out.println(buffer.readByte());
+        System.out.println(buffer.readByte());
+        System.out.println(buffer.readByte());
+        log(buffer);
+
+        buffer.markReaderIndex();
+        System.out.println(buffer.readInt());
+        log(buffer);
+
+        buffer.resetReaderIndex();
+        log(buffer);
+
+    }
+
+    public static void main1() {
         ByteBuf buf = ByteBufAllocator.DEFAULT.buffer();
+        System.out.println(buf.getClass());
         log(buf);//PooledUnsafeDirectByteBuf(ridx: 0, widx: 0, cap: 256)
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < 32; i++) {
@@ -22,7 +44,9 @@ public class TestByteBuf {
         }
         buf.writeBytes(sb.toString().getBytes());
         log(buf);//PooledUnsafeDirectByteBuf(ridx: 0, widx: 300, cap: 512)
+
     }
+
 
     private static void log(ByteBuf byteBuf) {
         int length = byteBuf.readableBytes();
