@@ -48,7 +48,7 @@ public class TestByteBuf {
     }
 
 
-    private static void log(ByteBuf byteBuf) {
+    public static void log(ByteBuf byteBuf) {
         int length = byteBuf.readableBytes();
         int rows = length / 16 + (length % 15 == 0 ? 0 : 1) + 4;
         StringBuilder sb = new StringBuilder(rows * 80 * 2).append("read index:").append(byteBuf.readerIndex())
