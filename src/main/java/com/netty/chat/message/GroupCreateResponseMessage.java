@@ -1,0 +1,22 @@
+package com.netty.chat.message;
+
+import lombok.Data;
+import lombok.ToString;
+
+/**
+ * @author xiangchijie
+ * @date 2021/12/15 4:50 下午
+ */
+@Data
+@ToString(callSuper = true)
+public class GroupCreateResponseMessage extends AbstractResponseMessage{
+
+    public GroupCreateResponseMessage(boolean success, String reason) {
+        super(success, reason);
+    }
+
+    @Override
+    public int getMessageType() {
+        return GroupCreateResponseMessage;
+    }
+}

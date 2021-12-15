@@ -28,7 +28,6 @@ public class AioFileChannel {
             ByteBuffer buffer = ByteBuffer.allocate(16);
             log.debug("read begin...");
             channel.read(buffer, 0, buffer, new CompletionHandler<Integer, ByteBuffer>() {
-
                 @Override
                 public void completed(Integer result, ByteBuffer attachment) {
                     log.debug("read completed...{}", result);

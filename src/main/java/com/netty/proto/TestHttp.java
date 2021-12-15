@@ -1,4 +1,4 @@
-package com.nio.proto;
+package com.netty.proto;
 
 import com.google.common.net.HttpHeaders;
 import io.netty.bootstrap.ServerBootstrap;

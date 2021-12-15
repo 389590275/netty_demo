@@ -1,4 +1,4 @@
-package com.nio.proto;
+package com.netty.proto;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
