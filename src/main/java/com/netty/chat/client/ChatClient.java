@@ -8,7 +8,9 @@ import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.logging.LoggingHandler;
+import io.netty.handler.timeout.IdleState;
+import io.netty.handler.timeout.IdleStateEvent;
+import io.netty.handler.timeout.IdleStateHandler;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Arrays;
@@ -39,6 +41,23 @@ public class ChatClient {
                     ChannelPipeline pipeline = ch.pipeline();
                     pipeline.addLast(new ProtocolFrameDecoder());
                     pipeline.addLast(messageCodec);
+
+                    // 3s内如果没有向服务器写数据，会触发一个IdleStateEvent.WRITER_IDLE事件
+                    pipeline.addLast(new IdleStateHandler(0, 3, 0));
+                    // ChannelDuplexHandler 可以作为入站和出站处理器
+                    pipeline.addLast(new ChannelDuplexHandler() {
+                        // 用来触发特殊事件
+                        @Override
+                        public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+                            IdleStateEvent event = (IdleStateEvent) evt;
+                            // 触发了写空闲事件，发送心跳数据
+                            if (event.state() == IdleState.WRITER_IDLE) {
+                                log.debug("3s没有写数据了自动发个心跳包");
+                                ctx.writeAndFlush(new PingMessage());
+                            }
+                        }
+                    });
+
                     pipeline.addLast("clientHandler", new ChannelInboundHandlerAdapter() {
                         @Override
                         // 连接建立后触发active事件 ，发送登录请求

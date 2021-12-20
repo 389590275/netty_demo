@@ -1,11 +1,11 @@
 package com.netty.chat.protocol;
 
+import com.netty.chat.config.Config;
 import com.netty.chat.message.Message;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageCodec;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.SerializationUtils;
 
 import java.util.List;
 
@@ -24,7 +24,7 @@ public class MessageCodec extends ByteToMessageCodec<Message> {
         // 2. 1字节的版本
         out.writeByte(1);
         // 3. 1字节序列化方式 jdk 0 json 1
-        out.writeByte(0);
+        out.writeByte(Config.getSerializerAlgorithm().ordinal());
         // 4. 1字节指令类型
         out.writeByte(msg.getMessageType());
         // 5. 4字节请求序号
@@ -32,7 +32,7 @@ public class MessageCodec extends ByteToMessageCodec<Message> {
         // 无意义 对齐填充
         out.writeByte(0xff);
         // 6. 4字节正文长度
-        byte[] bytes = SerializationUtils.serialize(msg);
+        byte[] bytes = Config.getSerializerAlgorithm().serialize(msg);
         out.writeInt(bytes.length);
         // 7. bytes.length的正文内容
         out.writeBytes(bytes);
@@ -49,7 +49,11 @@ public class MessageCodec extends ByteToMessageCodec<Message> {
         int length = in.readInt();
         byte[] bytes = new byte[length];
         in.readBytes(bytes, 0, length);
-        Message msg = SerializationUtils.deserialize(bytes);
+        // 找到反序列化算法
+        Serializer.Algorithm algorithm = Serializer.Algorithm.values()[serializerType];
+        // 确定具体消息类型
+        Class<?> messageClass = Message.getMessageClass(messageType);
+        Object msg = algorithm.deserialize(messageClass, bytes);
         log.debug("{} {} {} {} {} {} {} ", magicNum, version, serializerType, messageType, sequenceId, length, msg);
         log.debug("{}", msg);
         out.add(msg);
