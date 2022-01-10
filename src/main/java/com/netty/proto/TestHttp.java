@@ -14,6 +14,8 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import lombok.extern.slf4j.Slf4j;
 
+import java.nio.charset.Charset;
+
 /**
  * @author xiangchijie
  * @date 2021/12/14 11:11 上午
@@ -43,10 +45,11 @@ public class TestHttp {
                             //返回响应 http协议版本
                             DefaultFullHttpResponse response = new DefaultFullHttpResponse(msg.protocolVersion(), HttpResponseStatus.OK);
                             // 内容
-                            byte[] bytes = "<h1>hello world</h1>".getBytes();
+                            byte[] bytes = "<h1>王睿真帅</h1>".getBytes(Charset.defaultCharset());
                             response.content().writeBytes(bytes);
                             // 设置内容长度 否则浏览器不知道你的内容多长 就会一直转圈等待
                             response.headers().setInt(HttpHeaders.CONTENT_LENGTH, bytes.length);
+                            response.headers().set(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN,"*");
                             ctx.writeAndFlush(response);
                         }
 

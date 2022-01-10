@@ -11,6 +11,7 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;
+import io.netty.util.concurrent.GenericFutureListener;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Arrays;
@@ -120,7 +121,7 @@ public class ChatClient {
                                             return;
                                     }
                                 }
-                            }, "system in").start();
+                            }, "system  in").start();
                         }
 
                         @Override
@@ -138,12 +139,14 @@ public class ChatClient {
                     });
                 }
             });
-            Channel channel = bootstrap.connect("localhost", 8080).sync().channel();
-            channel.closeFuture().sync();
+            ChannelFuture channelFuture = bootstrap.connect("localhost", 8080).sync();
+            Channel channel = channelFuture.channel();
+            channel.writeAndFlush(1);
+//            channel.closeFuture().sync();
+            channel.closeFuture().addListener( future -> group.shutdownGracefully());
         } catch (Exception e) {
-            log.error("client error", e);
-        } finally {
             group.shutdownGracefully();
+            log.error("client error", e);
         }
     }
 

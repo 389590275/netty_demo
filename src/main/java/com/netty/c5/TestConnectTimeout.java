@@ -1,6 +1,7 @@
 package com.netty.c5;
 
 import io.netty.bootstrap.Bootstrap;
+import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -17,6 +18,10 @@ import lombok.extern.slf4j.Slf4j;
 public class TestConnectTimeout {
 
     public static void main(String[] args) {
+        // 1.客户端通过.option() 方法配置参数 给SocketChannel配置参数
+        // 2.服务器
+        // new ServerBootstrap().option() 给 ServerSocketChannel配置参数
+        // new ServerBootstrap().channelOption() 给SocketChannel配置参数
         NioEventLoopGroup group = new NioEventLoopGroup();
         try {
             Bootstrap bootstrap = new Bootstrap()
@@ -29,7 +34,6 @@ public class TestConnectTimeout {
                             ch.pipeline().addLast(new LoggingHandler());
                         }
                     });
-
             ChannelFuture future = bootstrap.connect("127.0.0.1", 8080);
             future.sync();
             future.channel().closeFuture().sync();
