@@ -5,11 +5,13 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelInitializer;
+import io.netty.channel.DefaultEventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
+import java.util.concurrent.ThreadFactory;
 
 /**
  * @author xiangchijie
@@ -36,6 +38,13 @@ public class TestClient {
                     }
                 });
         bootstrap.connect(new InetSocketAddress(8080)).sync();
+
+        new DefaultEventLoopGroup(10, new ThreadFactory() {
+            @Override
+            public Thread newThread(Runnable r) {
+                return null;
+            }
+        });
     }
 
 }

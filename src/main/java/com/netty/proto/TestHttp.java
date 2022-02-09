@@ -52,8 +52,6 @@ public class TestHttp {
                             response.headers().set(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN,"*");
                             ctx.writeAndFlush(response);
                         }
-
-
                     });
                     // 处理消息
 //                    pipeline.addLast(new ChannelInboundHandlerAdapter() {
